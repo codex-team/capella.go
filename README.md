@@ -1,5 +1,3 @@
-# capella.go
-
 # Go SDK for CodeX Capella
 
 package contains methods to upload images to the Capella Server
