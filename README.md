@@ -1,4 +1,4 @@
-# Go SDK for CodeX Capella
+# Capella SDK for Golang
 
 package contains methods to upload images to the Capella Server
 
@@ -9,10 +9,6 @@ package contains methods to upload images to the Capella Server
 ```golang
 go get https://github.com/codex-team/capella.go
 ```
-
-### Binary download
-
-Binaries for Linux, macOS and Windows are available in the [releases section](https://github.com/codex-team/capella.go/releases) of this repository
 
 ## Usage
 
