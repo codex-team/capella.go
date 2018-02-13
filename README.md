@@ -1,4 +1,4 @@
-# Go SDK for CodeX Capella
+# Capella SDK for Golang
 
 package contains methods to upload images to the Capella Server
 
@@ -9,10 +9,6 @@ package contains methods to upload images to the Capella Server
 ```golang
 go get https://github.com/codex-team/capella.go
 ```
-
-### Binary download
-
-Binaries for Linux, macOS and Windows are available in the releases section of this repository
 
 ## Usage
 
@@ -47,8 +43,10 @@ response implements capella.Response struct that has
 `success`, `message`, `id`, `url`
 
 `success` is `true` when CodeX capella saved the image
+
 `url` - special allocated URL for uploaded image. If `success` is `false` this propery 
 takes value of nil
+
 `message` - in case of error you will get a message. 
 
 ## Docs
@@ -57,5 +55,5 @@ CodeX Capella [documentation](https://github.com/codex-team/capella#readme)
 
 ## Contribution
 
-Feel free to aks a question or report a bug or fork and improve a package
+Feel free to aks a question, report a bug or fork and improve a package
 
