@@ -1,3 +1,7 @@
+// Copyright 2018 CodeX
+// Go SDK for Capella
+// license that can be found in the LICENSE file.
+
 package capella
 
 import (
@@ -7,6 +11,10 @@ import (
 	"fmt"
 	"encoding/json"
 	"net/url"
+	"os"
+	"bytes"
+	"mime/multipart"
+	"io"
 )
 
 const (
@@ -26,6 +34,51 @@ type Response struct {
 	URL string `json:"url"`
 	Success bool `json:"success"`
 	Message string `json:"message"`
+}
+
+func UploadFile(path string) (response Response, error CapellaError) {
+
+	bodyBuf := &bytes.Buffer{}
+	bodyWriter := multipart.NewWriter(bodyBuf)
+
+	// this step is very important
+	fileWriter, err := bodyWriter.CreateFormFile("file", path)
+	if err != nil {
+		log.Println("error writing to buffer", err)
+	}
+
+	file, err := os.Open(path)
+	if err != nil {
+		log.Println("Can't open file", err)
+	}
+	defer file.Close()
+
+	//iocopy
+	_, err = io.Copy(fileWriter, file)
+
+	contentType := bodyWriter.FormDataContentType()
+	bodyWriter.Close()
+
+	postResp, err := http.Post(API_URL, contentType, bodyBuf)
+
+	if err != nil {
+		panic(err)
+	}
+
+	defer postResp.Body.Close()
+
+	message, _ := ioutil.ReadAll(postResp.Body)
+	err = json.Unmarshal(message, &response)
+
+	if err != nil {
+		log.Fatal("Can't parse file because: ", err)
+	}
+
+	if response.Success != true {
+		error.Message = response.Message
+	}
+
+	return
 }
 
 func Upload(uri string) (response Response, error CapellaError) {
