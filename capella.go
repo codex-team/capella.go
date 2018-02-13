@@ -1,7 +1,6 @@
 // Copyright 2018 CodeX
 // Go SDK for Capella
 // license that can be found in the LICENSE file.
-
 package capella
 
 import (
@@ -17,25 +16,41 @@ import (
 	"io"
 )
 
+// Capella uploading URL.
+// https://github.com/codex-team/capella
 const (
 	API_URL = "https://capella.pics/upload"
 )
 
+// Returns capella error message
+// Implements error interface and releases custom Error function
 type CapellaError struct {
+	// text message from CodeX capella. Takes value of nil if Response success is true
 	Message string
 }
 
+// Custom Error function that returns text Message
 func (err *CapellaError) Error() string {
+	// Formatted message
 	return fmt.Sprintf("%s", err.Message)
 }
 
+// CodeX Capella formatted response
 type Response struct {
+	// uploaded image ID
 	ID string `json:"id"`
+	// full URL to the image
 	URL string `json:"url"`
+	// success condition.
 	Success bool `json:"success"`
+	// error message according to the Capella API
 	Message string `json:"message"`
 }
 
+// Method uploads file from local path
+// It is important to use absolute path to file so that os.Open could find the file
+// in error case client get's CapellaError
+// Success case returns Response struct type that describes all properties
 func UploadFile(path string) (response Response, error CapellaError) {
 
 	bodyBuf := &bytes.Buffer{}
@@ -81,6 +96,8 @@ func UploadFile(path string) (response Response, error CapellaError) {
 	return
 }
 
+// This method uploads file from passed url
+// Responses the same struct which were described above
 func Upload(uri string) (response Response, error CapellaError) {
 
 	// sending post request to the Capella server
