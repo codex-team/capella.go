@@ -4,16 +4,16 @@
 package capella
 
 import (
-	"net/http"
-	"log"
-	"io/ioutil"
-	"fmt"
+	"bytes"
 	"encoding/json"
+	"fmt"
+	"io"
+	"io/ioutil"
+	"log"
+	"mime/multipart"
+	"net/http"
 	"net/url"
 	"os"
-	"bytes"
-	"mime/multipart"
-	"io"
 )
 
 // Capella uploading URL.
@@ -57,23 +57,27 @@ func UploadFile(path string) (response Response, error CapellaError) {
 	bodyWriter := multipart.NewWriter(bodyBuf)
 
 	// this step is very important
+	// CreateFormFile is a convenience wrapper around CreatePart. It creates
+	// a new form-data header with the provided field name and file name.
 	fileWriter, err := bodyWriter.CreateFormFile("file", path)
 	if err != nil {
 		log.Println("error writing to buffer", err)
 	}
 
+	// get file from local filesystem
 	file, err := os.Open(path)
 	if err != nil {
 		log.Println("Can't open file", err)
 	}
 	defer file.Close()
 
-	//iocopy
+	// copy file to fileWriter
 	_, err = io.Copy(fileWriter, file)
 
 	contentType := bodyWriter.FormDataContentType()
 	bodyWriter.Close()
 
+	// send copied file to Capella server
 	postResp, err := http.Post(API_URL, contentType, bodyBuf)
 
 	if err != nil {
@@ -101,7 +105,7 @@ func UploadFile(path string) (response Response, error CapellaError) {
 func Upload(uri string) (response Response, error CapellaError) {
 
 	// sending post request to the Capella server
-	postResp, postErr := http.PostForm(API_URL, url.Values{"link" : {uri}})
+	postResp, postErr := http.PostForm(API_URL, url.Values{"link": {uri}})
 	if postErr != nil {
 		log.Println("Error while sending request:", postErr)
 	}

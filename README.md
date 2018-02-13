@@ -6,7 +6,7 @@ package contains methods to upload images to the Capella Server
 
 ### Go Get
 
-```
+```golang
 go get https://github.com/codex-team/capella.go
 ```
 
@@ -16,7 +16,7 @@ Binaries for Linux, macOS and Windows are available in the releases section of t
 
 ## Usage
 
-```
+```golang
 import(
 	"github.com/codex-team/capella.go"
 )
